@@ -1,6 +1,6 @@
 # Ignore Visual Studio Code settings
 .vscode/
-
+/docs/
 # Ignore HTML folder
 html
 

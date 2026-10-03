@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Services\ProfileAvatar;
+use Core\Database\ActiveRecord\BelongsToMany;
+use Core\Database\ActiveRecord\HasMany;
 use Lib\Validations;
 use Core\Database\ActiveRecord\Model;
 
@@ -11,6 +14,8 @@ use Core\Database\ActiveRecord\Model;
  * @property string $email
  * @property string $encrypted_password
  * @property string $avatar_name
+ * @property Problem[] $problems
+ * @property Problem[] $reinforced_problems
  */
 class User extends Model
 {
@@ -19,6 +24,16 @@ class User extends Model
 
     protected ?string $password = null;
     protected ?string $password_confirmation = null;
+
+    public function problems(): HasMany
+    {
+        return $this->hasMany(Problem::class, 'user_id');
+    }
+
+    public function reinforcedProblems(): BelongsToMany
+    {
+        return $this->belongsToMany(Problem::class, 'problem_user_reinforce', 'user_id', 'problem_id');
+    }
 
     public function validates(): void
     {
@@ -57,5 +72,10 @@ class User extends Model
         ) {
             $this->encrypted_password = password_hash($value, PASSWORD_DEFAULT);
         }
+    }
+
+    public function avatar(): ProfileAvatar
+    {
+        return new ProfileAvatar($this);
     }
 }
