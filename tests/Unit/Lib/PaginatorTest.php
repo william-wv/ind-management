@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Lib;
 
-use App\Models\Problem;
 use App\Models\User;
 use Lib\Paginator;
 use Tests\TestCase;
@@ -10,26 +9,17 @@ use Tests\TestCase;
 class PaginatorTest extends TestCase
 {
     private Paginator $paginator;
-    /** @var mixed[] $problems */
-    private array $problems;
+    /** @var User[] $users */
+    private array $users;
 
     public function setUp(): void
     {
         parent::setUp();
-        $user = new User([
-            'name' => 'User 1',
-            'email' => 'fulano@example.com',
-            'password' => '123456',
-            'password_confirmation' => '123456'
-        ]);
-        $user->save();
 
         for ($i = 0; $i < 10; $i++) {
-            $problem = new Problem(['title' => "Problem $i", 'user_id' => $user->id]);
-            $problem->save();
-            $this->problems[] = $problem;
+            $this->users[] = $this->createUser($i);
         }
-        $this->paginator = new Paginator(Problem::class, 1, 5, 'problems', ['title']);
+        $this->paginator = new Paginator(User::class, 1, 5, 'users', ['name']);
     }
 
     public function test_total_of_registers(): void
@@ -44,9 +34,8 @@ class PaginatorTest extends TestCase
 
     public function test_total_of_pages_when_the_division_is_not_exact(): void
     {
-        $problem = new Problem(['title' => 'Problem 11', 'user_id' => $this->problems[0]->user_id]);
-        $problem->save();
-        $this->paginator = new Paginator(Problem::class, 1, 5, 'problems', ['title']);
+        $this->createUser(10);
+        $this->paginator = new Paginator(User::class, 1, 5, 'users', ['name']);
 
         $this->assertEquals(3, $this->paginator->totalOfPages());
     }
@@ -65,7 +54,7 @@ class PaginatorTest extends TestCase
     {
         $this->assertFalse($this->paginator->hasPreviousPage());
 
-        $paginator = new Paginator(Problem::class, 2, 5, 'problems', ['title']);
+        $paginator = new Paginator(User::class, 2, 5, 'users', ['name']);
         $this->assertTrue($paginator->hasPreviousPage());
     }
 
@@ -73,7 +62,7 @@ class PaginatorTest extends TestCase
     {
         $this->assertTrue($this->paginator->hasNextPage());
 
-        $paginator = new Paginator(Problem::class, 2, 5, 'problems', ['title']);
+        $paginator = new Paginator(User::class, 2, 5, 'users', ['name']);
         $this->assertFalse($paginator->hasNextPage());
     }
 
@@ -93,7 +82,23 @@ class PaginatorTest extends TestCase
     {
         $this->assertCount(5, $this->paginator->registers());
 
-        $paginator = new Paginator(Problem::class, 1, 10, 'problems', ['title', 'user_id']);
-        $this->assertEquals($this->problems, $paginator->registers());
+        $paginator = new Paginator(User::class, 1, 10, 'users', ['name', 'email']);
+        $this->assertEquals(
+            array_map(fn($user) => $user->email, $this->users),
+            array_map(fn($user) => $user->email, $paginator->registers())
+        );
+    }
+
+    private function createUser(int $index): User
+    {
+        $user = new User([
+            'name' => "User $index",
+            'email' => "fulano{$index}@example.com",
+            'password' => '123456',
+            'password_confirmation' => '123456'
+        ]);
+        $user->save();
+
+        return $user;
     }
 }

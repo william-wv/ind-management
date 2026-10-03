@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use App\Services\ProfileAvatar;
-use Core\Database\ActiveRecord\BelongsToMany;
-use Core\Database\ActiveRecord\HasMany;
 use Lib\Validations;
 use Core\Database\ActiveRecord\Model;
 
@@ -12,34 +10,23 @@ use Core\Database\ActiveRecord\Model;
  * @property int $id
  * @property string $name
  * @property string $email
+ * @property string $role
  * @property string $encrypted_password
  * @property string $avatar_name
- * @property Problem[] $problems
- * @property Problem[] $reinforced_problems
  */
 class User extends Model
 {
     protected static string $table = 'users';
-    protected static array $columns = ['name', 'email', 'encrypted_password', 'avatar_name'];
+    protected static array $columns = ['name', 'email','role','encrypted_password', 'avatar_name'];
 
     protected ?string $password = null;
     protected ?string $password_confirmation = null;
-
-    public function problems(): HasMany
-    {
-        return $this->hasMany(Problem::class, 'user_id');
-    }
-
-    public function reinforcedProblems(): BelongsToMany
-    {
-        return $this->belongsToMany(Problem::class, 'problem_user_reinforce', 'user_id', 'problem_id');
-    }
 
     public function validates(): void
     {
         Validations::notEmpty('name', $this);
         Validations::notEmpty('email', $this);
-
+        Validations::notEmpty('role', $this);
         Validations::uniqueness('email', $this);
 
         if ($this->newRecord()) {

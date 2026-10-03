@@ -26,7 +26,7 @@ class LoginCest extends BaseAcceptanceCest
         $page->click('Entrar');
 
         $page->see('Login realizado com sucesso!');
-        $page->seeInCurrentUrl('/problems');
+        $page->seeCurrentUrlEquals('/');
     }
 
     public function loginUnsuccessfully(AcceptanceTester $page): void

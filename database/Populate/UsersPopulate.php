@@ -11,6 +11,7 @@ class UsersPopulate
         $data =  [
             'name' => 'Fulano',
             'email' => 'fulano@example.com',
+            'role' => 'admin',
             'password' => '123456',
             'password_confirmation' => '123456'
         ];

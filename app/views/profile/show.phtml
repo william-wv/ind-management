@@ -13,11 +13,13 @@
     <div class="mx-5">
         <div class="rounded">
             <h3><?= $this->current_user->name ?></h3>
-            <span class="text-primary">Estudante de Sistema para Internet</span>
         </div>
         <ul class="list-unstyled mt-2">
             <li>
                 <span>Email: <?= $this->current_user->email ?></span>
+            </li>
+            <li>
+                <span>Role: <?= $this->current_user->role ?></span>
             </li>
         </ul>
     </div>
