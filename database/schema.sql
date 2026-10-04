@@ -12,7 +12,6 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL,
     encrypted_password VARCHAR(255) NOT NULL,
     role ENUM('admin', 'basic') NOT NULL DEFAULT 'basic',
-    avatar_name VARCHAR(65),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uq_users_email (email)
 ) ENGINE=InnoDB;

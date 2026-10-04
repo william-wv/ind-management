@@ -77,4 +77,9 @@ class Validations
 
         return true;
     }
+
+    public static function x($fields, $object){
+
+    }
+
 }
