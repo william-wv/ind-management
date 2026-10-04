@@ -14,7 +14,7 @@ CREATE TABLE users (
     role ENUM('admin', 'basic') NOT NULL DEFAULT 'basic',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uq_users_email (email)
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE pallets (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -29,7 +29,7 @@ CREATE TABLE pallets (
     CONSTRAINT ck_pallets_width CHECK (width > 0),
     CONSTRAINT ck_pallets_length CHECK (length > 0),
     CONSTRAINT ck_pallets_amount CHECK (amount >= 0),
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE movements (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -42,7 +42,7 @@ CREATE TABLE movements (
         FOREIGN KEY (user_id)
         REFERENCES users(id)
         ON DELETE RESTRICT
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE pallet_movements (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -64,7 +64,7 @@ CREATE TABLE pallet_movements (
         ON DELETE RESTRICT,
     CONSTRAINT ck_pallet_movements_quantity CHECK (quantity >= 0),
     CONSTRAINT ck_pallet_movements_after CHECK (quantity_after >= 0)
-) ENGINE=InnoDB;
+);
 
 CREATE TABLE pallet_movement_photos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -80,6 +80,6 @@ CREATE TABLE pallet_movement_photos (
         FOREIGN KEY (pallet_movement_id)
         REFERENCES pallet_movements(id)
         ON DELETE CASCADE
-) ENGINE=InnoDB;
+);
 
 SET foreign_key_checks = 1;
