@@ -12,9 +12,10 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL,
     encrypted_password VARCHAR(255) NOT NULL,
     role ENUM('admin', 'basic') NOT NULL DEFAULT 'basic',
+    avatar_name VARCHAR(65),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uq_users_email (email)
-);
+) ;
 
 CREATE TABLE pallets (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -28,8 +29,8 @@ CREATE TABLE pallets (
     UNIQUE KEY uq_pallets_format (item, width, length),
     CONSTRAINT ck_pallets_width CHECK (width > 0),
     CONSTRAINT ck_pallets_length CHECK (length > 0),
-    CONSTRAINT ck_pallets_amount CHECK (amount >= 0),
-);
+    CONSTRAINT ck_pallets_amount CHECK (amount >= 0)
+) ;
 
 CREATE TABLE movements (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -42,7 +43,7 @@ CREATE TABLE movements (
         FOREIGN KEY (user_id)
         REFERENCES users(id)
         ON DELETE RESTRICT
-);
+) ;
 
 CREATE TABLE pallet_movements (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -64,7 +65,7 @@ CREATE TABLE pallet_movements (
         ON DELETE RESTRICT,
     CONSTRAINT ck_pallet_movements_quantity CHECK (quantity >= 0),
     CONSTRAINT ck_pallet_movements_after CHECK (quantity_after >= 0)
-);
+) ;
 
 CREATE TABLE pallet_movement_photos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -80,6 +81,6 @@ CREATE TABLE pallet_movement_photos (
         FOREIGN KEY (pallet_movement_id)
         REFERENCES pallet_movements(id)
         ON DELETE CASCADE
-);
+) ;
 
 SET foreign_key_checks = 1;

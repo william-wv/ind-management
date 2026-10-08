@@ -18,19 +18,28 @@ class User extends Model
 {
     // TODO 1: nome da tabela e colunas graváveis
     protected static string $table = 'users';
-    protected static array $columns = ['name', 'email', 'encrypted_password', 'role'];
+    protected static array $columns = ['name', 'email', 'encrypted_password', 'role', 'avatar_name'];
 
     // TODO 2: props virtuais (NÃO existem no banco)
     protected ?string $password = null;
-    protected ?string $confirmed_password = null;
+    protected ?string $password_confirmation = null;
+
+    /**
+     * Role padrão 'basic': o save() grava NULL explícito e o DEFAULT do banco
+     * só vale quando a coluna é omitida no INSERT.
+     *
+     * @param array<string, mixed> $params
+     */
+    public function __construct($params = [])
+    {
+        parent::__construct(array_merge(['role' => 'basic'], $params));
+    }
 
     // TODO 3: regras de validação (Model::isValid() chama isso antes do save)
     // Dica: Validations::notEmpty('campo', $this);
     //   - name, email, role -> não vazios
     //   - email -> único (Validations::uniqueness)
     //   - confirmação de senha -> SÓ se for registro novo ($this->newRecord())
-
-
     public function validates(): void
     {
         Validations::notEmpty('name', $this);
@@ -38,47 +47,52 @@ class User extends Model
         Validations::notEmpty('encrypted_password', $this);
         Validations::notEmpty('role', $this);
         Validations::uniqueness('email', $this);
-        
-        if($this->newRecord()){
+
+        if ($this->newRecord()) {
             Validations::passwordConfirmation($this);
         }
-
     }
-
 
     // TODO 4: conferir senha digitada contra o hash do banco
     public function authenticate(string $password): bool
     {
-        if($this->encrypted_password == null){
+        if ($this->encrypted_password == null) {
             return false;
         }
 
         return password_verify($password, $this->encrypted_password);
     }
 
-
     // TODO 5: buscar usuário pelo e-mail (null se não achar)
     // Dica: Model::findBy(['coluna' => valor]) -> ?static
     //   Dentro de método static, use `static::` ou `self::`
-    public static function findByEmail(string $email): User | null
+    public static function findByEmail(string $email): ?static
     {
-        return Model::findBy(['email' => $email]);
+        return static::findBy(['email' => $email]);
     }
-
 
     // TODO 6: gerar hash quando `password` for atribuído
     // Dica: __set roda toda vez que você faz $user->algo = valor
     //   1. chamar parent::__set($property, $value) (senão nada é gravado)
     //   2. se $property === 'password' E registro novo E valor não vazio
-    //      -> $this->encrypted_password = password_hash($value, PASSWORD_DEFAULT)  
+    //      -> $this->encrypted_password = password_hash($value, PASSWORD_DEFAULT)
     public function __set(string $property, mixed $value): void
     {
-    }
+        parent::__set($property, $value);
 
+        if (
+            $property === 'encrypted_password' &&
+            $this->newRecord() &&
+            $value !== null && $value !== ''
+        ) {
+            $this->encrypted_password = password_hash($value, PASSWORD_DEFAULT);
+        }
+    }
 
     // TODO 7: avatar do usuário
     // Dica: App\Services\ProfileAvatar recebe o próprio usuário no construtor
     public function avatar(): ProfileAvatar
     {
+        return new ProfileAvatar($this);
     }
 }
