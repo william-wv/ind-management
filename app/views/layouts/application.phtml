@@ -38,6 +38,11 @@
             <aside class="col-auto sidebar">
                 <nav>
                     <ul class="nav flex-column mt-1">
+                        <?php if ($this->current_user && $this->current_user->isAdmin()) : ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?= route('users.index') ?>">Usuários</a>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </nav>
             </aside>

@@ -81,12 +81,17 @@ class User extends Model
         parent::__set($property, $value);
 
         if (
-            $property === 'encrypted_password' &&
+            $property === 'password' &&
             $this->newRecord() &&
             $value !== null && $value !== ''
         ) {
             $this->encrypted_password = password_hash($value, PASSWORD_DEFAULT);
         }
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 
     // TODO 7: avatar do usuário

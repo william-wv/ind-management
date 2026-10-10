@@ -2,6 +2,7 @@
 
 use App\Controllers\AuthenticationsController;
 use App\Controllers\ProfileController;
+use App\Controllers\UsersController;
 use Core\Router\Route;
 
 // Authentication
@@ -17,4 +18,9 @@ Route::middleware('auth')->group(function () {
     // Profile
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
+
+    // Admin only
+    Route::middleware('admin')->group(function () {
+        Route::get('/users', [UsersController::class, 'index'])->name('users.index');
+    });
 });
