@@ -8,7 +8,7 @@ use Core\Http\Request;
 use Lib\Authentication\Auth;
 use Lib\FlashMessage;
 
-class  AuthenticationsController  extends Controller
+class AuthenticationsController extends Controller
 {
     protected string $layout = 'login';
 
