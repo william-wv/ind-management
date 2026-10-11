@@ -26,6 +26,7 @@ use Tests\Support;
  * @method void seeInCurrentUrl(string $url)
  *
  * @method void login(string $username, $password)
+ * @method void logout()
  *
  * @SuppressWarnings(PHPMD)
  */
