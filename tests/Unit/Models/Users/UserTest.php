@@ -139,4 +139,29 @@ class UserTest extends TestCase
         $this->assertTrue($this->user->authenticate('123456'));
         $this->assertFalse($this->user->authenticate('654321'));
     }
+
+    public function test_new_user_should_have_basic_role_by_default(): void
+    {
+        $this->assertEquals('basic', $this->user->role);
+        $this->assertEquals('basic', User::findById($this->user->id)->role);
+    }
+
+    public function test_is_admin_should_return_true_for_admin_role(): void
+    {
+        $admin = new User([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
+            'password' => '123456',
+            'password_confirmation' => '123456',
+            'role' => 'admin'
+        ]);
+        $admin->save();
+
+        $this->assertTrue($admin->isAdmin());
+    }
+
+    public function test_is_admin_should_return_false_for_basic_role(): void
+    {
+        $this->assertFalse($this->user->isAdmin());
+    }
 }

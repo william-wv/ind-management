@@ -1,103 +1,74 @@
-## Problem Track
+# Instalação e Execução
 
-"Problem Track" is the ultimate solution for organizations seeking to enhance their problem resolution processes, drive operational efficiency, and deliver exceptional customer experiences.
+## Requisitos
 
-### Dependências
+- Git
+- Docker e Docker Compose
 
-- Docker
-- Docker Compose
+## 1. Download
 
-### To run
-
-#### Clone Repository
-
-```
-$ git clone git@github.com:SI-DABE/problem-track.git
-$ cd problem-track
+```bash
+git clone https://github.com/william-wv/ind-management.git
+cd ind-management
 ```
 
-#### Define the env variables
+## 2. Variáveis de ambiente
 
-```
-$ cp .env.example .env
-```
-
-#### Install the dependencies
-
-```
-$ ./run composer install
+```bash
+cp .env.example .env
 ```
 
-#### Up the containers
+## 3. Dependências
 
-```
-$ docker compose up -d
-```
-
-ou
-
-```
-$ ./run up -d
+```bash
+./run composer install
 ```
 
-#### Create database and tables
+## 4. Subir os containers
 
-```
-$ ./run db:reset
-```
-
-#### Populate database
-
-```
-$ ./run db:populate
+```bash
+./run up -d
 ```
 
-### Fixed uploads folder permission
+## 5. Criar o banco e as tabelas
 
-```
-sudo chown www-data:www-data public/assets/uploads
-```
-
-#### Run the tests
-
-```
-$ docker compose run --rm php ./vendor/bin/phpunit tests --color
+```bash
+./run db:reset
 ```
 
-ou
+## 6. Populate
 
-```
-$ ./run test
-```
-
-#### Run the linters
-
-[PHPCS](https://github.com/PHPCSStandards/PHP_CodeSniffer/)
-
-```
-$ ./run phpcs
+```bash
+./run db:populate
 ```
 
-[PHPStan](https://phpstan.org/)
+Cria um administrador e um usuário comum (ver dados de acesso abaixo).
 
-```
-$ ./run phpstan
-```
+## 7. Permissão da pasta de uploads
 
-Access [localhost](http://localhost)
+Necessário para o upload de avatar:
 
-### Teste de API
-
-#### Rota não autenticada
-
-```shell
-curl -H "Accept: application/json" localhost/problems
+```bash
+sudo chown -R www-data:www-data public/assets/uploads
 ```
 
-#### Rota autenticada
+## 8. Acessar
 
-Neste caso precisa alterar o valor do PHPSESSID de acordo com a o id da sua sessão.
+http://localhost:8081
 
-```shell
-curl -H "Accept: application/json" -b "PHPSESSID=5f55f364a48d87fb7ef9f18425a8ae88" localhost/problems
+## Dados de acesso
+
+| Perfil | E-mail | Senha |
+|---|---|---|
+| `admin` | `fulano@example.com` | `123456` |
+| `basic` | `fulano1@example.com` | `123456` |
+
+## Testes e qualidade
+
+```bash
+./run test tests/Unit          # unitários
+./run test tests/Integration   # integração e acesso às rotas
+./run test:browser             # aceitação (Selenium)
+./run phpcs                    # padrão de código (PSR-12)
+./run phpstan                  # análise estática
 ```
