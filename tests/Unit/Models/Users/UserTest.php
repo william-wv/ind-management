@@ -3,7 +3,6 @@
 namespace Tests\Unit\Models\Users;
 
 use App\Models\User;
-use App\Services\ProfileAvatar;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -165,6 +164,4 @@ class UserTest extends TestCase
     {
         $this->assertFalse($this->user->isAdmin());
     }
-
-
 }
