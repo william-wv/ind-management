@@ -41,6 +41,7 @@
                         <?php if ($this->current_user && $this->current_user->isAdmin()) : ?>
                             <li class="nav-item">
                                 <a class="nav-link" href="<?= route('users.index') ?>">Usuários</a>
+                                <a class="nav-link" href="<?= route('pallets.form') ?>">Cadastrar pallet</a>
                             </li>
                         <?php endif; ?>
                     </ul>
@@ -50,7 +51,7 @@
 
                 <?php require '_flash_message.phtml'; ?>
 
-                <header class="mb-3">
+                <header class="mb-3 px-4">
                     <h1>
                         <?= $title ?>
                     </h1>

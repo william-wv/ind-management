@@ -22,3 +22,7 @@ html
 !/public/assets/uploads/.gitkeep
 
 /docs
+
+# ignore architecture informations
+
+RELATORIO-ARQUITETURA.md

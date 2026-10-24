@@ -22,7 +22,7 @@ CREATE TABLE pallets (
     item VARCHAR(100) NOT NULL,
     width DECIMAL(8,2) NOT NULL,
     length DECIMAL(8,2) NOT NULL,
-    location VARCHAR(100) NOT NULL,
+    location VARCHAR(100),
     amount INT NOT NULL DEFAULT 0,
     minimum_amount INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

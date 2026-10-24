@@ -1,0 +1,27 @@
+<div class="p-4">
+<form action="/create-pallet" method="POST" class="col-12 col-md-8 col-lg-6">
+    <div class="form-group mb-3  ">
+        <label for="pallet_length" class="form-label">Largura</label>
+        <input id="pallet_width" type="number" name="pallet[width]" class="form-control" placeholder="preencha a largura">
+    </div>
+    <div class="form-group mb-3">
+        <label for="pallet_length" class="form-label">Comprimento</label>
+        <input id="pallet_length" type="number" name="pallet[length]" class="form-control" placeholder="preencha o comprimento">
+    </div>
+    <div class="form-group mb-3">
+        <label for="pallet_item" class="form-label">item</label>
+        <input id="pallet_item" type="text" name="pallet[item]" class="form-control" placeholder="preencha o item">
+    </div>
+    <div class="form-group mb-3">
+        <label for="pallet_amount" class="form-label">quantidade</label>
+        <input id="pallet_amount" type="number" name="pallet[amount]" class="form-control" placeholder="preencha a quantidade">
+    </div>
+    <div class="form-group mb-3">
+        <label for="pallet_quantity_minimum" class="form-label">quantidade minima</label>
+        <input id="pallet_quantity_minimum" type="number" name="pallet[quantity_min]" class="form-control" placeholder="preencha a quantidade minima">
+    </div>
+    <div class="d-grid">
+        <input type="submit" class="btn btn-primary btn-block" value="Cadastrar">
+    </div>
+</form>
+</div>
