@@ -1,67 +1,45 @@
 <?php
-
+namespace App\Models;
 use Lib\Validations;
 use Core\Database\ActiveRecord\Model;
 
+/**
+ * @property int $id
+ * @property string $item
+ * @property string $width
+ * @property string $length
+ * @property string $location
+ * @property string $amount
+ * @property string $minimum_amount
+ */
+
 class Pallet extends Model
 {
-    private string $id;
-    private string $item;
-    private int $width;
-    private int $length;
-    private string $location;
-    private int $amount;
-
+    protected static string $table = 'pallets';
+    protected static array $columns = ['item', 'width', 'length', 'location', 'amount', 'minimum_amount'];
     
-    public function __construct(string $id, string $item, int $width, int $length, string $location, int $amount)
-    {
-        $this->id = $id;
-        $this->item = $item;
-        $this->width = $width;
-        $this->length = $length;
-        $this->location = $location;
-        $this->amount = $amount;
-    }
 
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-
-    public function getItem(): string
-    {
-        return $this->item;
-    }
-
-    public function getWidth(): int
-    {
-        return $this->width;
-    }
-    
-    public function getLength(): int
-    {
-        return $this->length;
-    }
-
-    public function getLocation(): string
-    {
-        return $this->location;
-    }
-
-    public function getAmount(): int
-    {
-        return $this->amount;
-    }
-
-
-    public validates(): void
+    public function validates(): void
     {
         Validations::notEmpty('item', $this);
         Validations::notEmpty('width', $this);
         Validations::notEmpty('length', $this);
-        Validations::notEmpty('amount',$this);
         Validations::uniqueness('item',$this);
+
+        
+    }
+
+    public function existPallet(string $length, string $width ):bool
+    {
+        if(Pallet::findBy(['length' => $length, 'width' => $width])){
+                return true;
+        }
+
+        return false;
+    }
+
+    public function convertToInt(string $attribute):void{
+        $this->$attribute = (int) $this->$attribute;    
     }
 
 
