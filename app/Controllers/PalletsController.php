@@ -62,7 +62,9 @@ class PalletsController extends Controller{
             $this->render('pallets/show',compact('title', 'pallets'));
             return;
         }
-        $this->render('pallets/show',compact('title'));
+
+        $pallets = [];
+        $this->render('pallets/show',compact('title','pallets'));
 
    }
 
