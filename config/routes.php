@@ -21,6 +21,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
 
+    // Pallets Stock
+      Route::get('/show-pallet', [PalletsController::class, 'show'])->name('pallets.show');
+
     // Admin only
     Route::middleware('admin')->group(function () {
         Route::get('/users', [UsersController::class, 'index'])->name('users.index');

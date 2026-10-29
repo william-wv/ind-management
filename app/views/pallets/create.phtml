@@ -3,14 +3,29 @@
     <div class="form-group mb-3  ">
         <label for="pallet_width" class="form-label">Largura</label>
         <input id="pallet_width" type="number" name="pallet[width]" class="form-control" placeholder="preencha a largura">
+        <?php if($newPallet->errors('width')):?>
+              <div class="text-danger">
+               <?= $newPallet->errors('width')?>
+             </div> 
+        <?php endif; ?>      
     </div>
     <div class="form-group mb-3">
         <label for="pallet_length" class="form-label">Comprimento</label>
         <input id="pallet_length" type="number" name="pallet[length]" class="form-control" placeholder="preencha o comprimento">
+        <?php if($newPallet->errors('length')):?>
+              <div class="text-danger">
+               <?= $newPallet->errors('length') ?>
+             </div> 
+        <?php endif; ?> 
     </div>
     <div class="form-group mb-3">
         <label for="pallet_item" class="form-label">item</label>
         <input id="pallet_item" type="text" name="pallet[item]" class="form-control" placeholder="preencha o item">
+         <?php if($newPallet->errors('item')):?>
+              <div class="text-danger">
+               <?= $newPallet->errors('item') ?>
+             </div> 
+        <?php endif; ?>    
     </div>
     <div class="form-group mb-3">
         <label for="pallet_amount" class="form-label">quantidade</label>

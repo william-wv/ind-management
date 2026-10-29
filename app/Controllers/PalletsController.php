@@ -12,27 +12,36 @@ class PalletsController extends Controller{
    public function new():void
    {
          $title = "Cadastro de Pallets";
+         $newPallet =  new Pallet();
 
-         $this->render('pallets/create',compact('title'));
+         $this->render('pallets/create',compact('title','newPallet'));
    }
 
-   public function registerPallet(Request $request){
+   public function show():void
+   {
+
+           $title = "Estoque Vitual";
+           $this->render('pallets/show',compact('title'));
+
+   }    
+
+   public function registerPallet(Request $request):void
+   {
         $params = $request->getParam('pallet');
 
         $newPallet = new Pallet($params);
 
         if(!$newPallet->isValid()){
-            FlashMessage::danger('Preencha todos os campos');
-            $this->redirectTo(route('pallets.form'));
-        }
-        $palletExist = Pallet::exists(['length' => $params['length'], 'width' => $params['width'],]) || Pallet::findBy(['item' => $params['item']]);
-
-        if($palletExist){
-            FlashMessage::danger('Pallet já está cadastrado no sistema');
-            $this->redirectTo(route('pallets.form'));
+            $title = "Cadastro de Pallets";
+            $this->render('pallets/create',compact('title','newPallet'));
+            return;
         }
 
-
+        if(Pallet::exists(['length' => $newPallet->length, 'width' => $newPallet->width])){
+            FlashMessage::danger('Pallet já cadastrado');
+            $this->redirectTo(route('pallets.form'));
+        }
+        
         $newPallet->convertToInt('amount');
         $newPallet->convertToInt('minimum_amount');
 

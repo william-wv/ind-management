@@ -19,7 +19,7 @@ CREATE TABLE users (
 
 CREATE TABLE pallets (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    item VARCHAR(100) NOT NULL,
+    item VARCHAR(100) NOT NULL UNIQUE,
     width DECIMAL(8,2) NOT NULL,
     length DECIMAL(8,2) NOT NULL,
     location VARCHAR(100),

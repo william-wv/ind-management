@@ -21,9 +21,9 @@ class Pallet extends Model
 
     public function validates(): void
     {
-        Validations::notEmpty('item', $this);
         Validations::notEmpty('width', $this);
         Validations::notEmpty('length', $this);
+        Validations::notEmpty('item', $this);
         Validations::uniqueness('item',$this);
 
         
