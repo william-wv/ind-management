@@ -1,3 +1,49 @@
 <div>
-   <h2>Pallets aqui<h2> 
-<div>    
+
+    <table>
+            <thead>
+                <tr>
+                    <th>Largura</th>
+                    <th>comprimento</th>
+                    <th>quantidade</th>
+                    <th>quantidade minima</th>
+                    <th>item</th>
+                    <th>localização</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php foreach ($pallets as $pallet): ?>
+                    <tr>
+                        
+                        <td><?= $pallet->width ?></td>
+                        <td><?= $pallet->length ?></td>
+                        <td><?= $pallet->amount ?></td>
+                        <td><?= $pallet->minimum_amount ?></td>
+                        <td><?= $pallet->item ?></td>
+                        <td><?= $pallet->location ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+    </table>
+
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #eee;
+    }
+</style>
+
+
+</div>    

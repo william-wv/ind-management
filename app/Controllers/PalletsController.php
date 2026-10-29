@@ -19,9 +19,7 @@ class PalletsController extends Controller{
 
    public function show():void
    {
-
-           $title = "Estoque Vitual";
-           $this->render('pallets/show',compact('title'));
+            $this->retrievePallet();
 
    }    
 
@@ -54,6 +52,18 @@ class PalletsController extends Controller{
             FlashMessage::danger('falha ao cadastrar pallet');
             $this->redirectTo(route('pallets.form'));
         }
+   }
+
+   public function retrievePallet():void{
+         $pallets = Pallet::all();   
+         $title = "Estoque Virtual";
+
+        if($pallets){   
+            $this->render('pallets/show',compact('title', 'pallets'));
+            return;
+        }
+        $this->render('pallets/show',compact('title'));
+
    }
 
 
