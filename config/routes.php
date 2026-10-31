@@ -24,6 +24,9 @@ Route::middleware('auth')->group(function () {
     // Pallets Stock
       Route::get('/show-pallet', [PalletsController::class, 'show'])->name('pallets.show');
 
+    //Pallets Delete 
+    Route::post('/delete-pallet',[PalletsController::class,'deletePallet'])->name('pallets.delete'); 
+
     // Admin only
     Route::middleware('admin')->group(function () {
         Route::get('/users', [UsersController::class, 'index'])->name('users.index');

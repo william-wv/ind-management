@@ -17,23 +17,35 @@ class PalletsController extends Controller{
          $this->render('pallets/create',compact('title','newPallet'));
    }
 
-   public function show():void
+   public function show( ):void
    {
             $this->retrievePallet();
 
-   }    
+   }
+   
+   public function deletePallet(Request $request):void
+   {    
+        $params = $request->getParam('pallet');
+         
+        $pallet = Pallet::findBy(['id' => $params['id']]);
+        if($pallet){
+            if($pallet->destroy()){
+                FlashMessage::success('Pallet Excluido');
+                $this->redirectTo(route('pallets.show'));
+            }
+                 FlashMessage::danger('não foi possivel excluir pallet');
+                $this->redirectTo(route('pallets.show'));
+        }
+                 FlashMessage::danger('Impossivel excluir, pallet inexistente');
+                 $this->redirectTo(route('pallets.show'));
+
+   }
 
    public function registerPallet(Request $request):void
    {
         $params = $request->getParam('pallet');
 
         $newPallet = new Pallet($params);
-
-        if(!$newPallet->isValid()){
-            $title = "Cadastro de Pallets";
-            $this->render('pallets/create',compact('title','newPallet'));
-            return;
-        }
 
         if(Pallet::exists(['length' => $newPallet->length, 'width' => $newPallet->width])){
             FlashMessage::danger('Pallet já cadastrado');
@@ -49,8 +61,10 @@ class PalletsController extends Controller{
         }
 
         else{
-            FlashMessage::danger('falha ao cadastrar pallet');
-            $this->redirectTo(route('pallets.form'));
+            $title = "Cadastro de Pallets";
+            FlashMessage::danger('Erro ao cadastrar pallet');
+            $this->render('pallets/create',compact('title','newPallet'));
+             return;
         }
    }
 
