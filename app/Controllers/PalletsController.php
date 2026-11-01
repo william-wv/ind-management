@@ -22,6 +22,19 @@ class PalletsController extends Controller{
             $this->retrievePallet();
 
    }
+
+   public function showUpdateForm(Request $request):void
+   {    $params = $request->getParam('pallet');
+        $pallet = Pallet::findBy(['id' => $params['id']]);
+
+        if($pallet){
+             $title = "Atualizar Pallet";
+             $this->render('pallets/update',compact('title','pallet'));
+             return;
+        }
+        FlashMessage::danger('Falha ao atualizar dados do Pallet');
+        $this->redirectTo(route('pallets.show'));
+   }
    
    public function deletePallet(Request $request):void
    {    
@@ -68,7 +81,8 @@ class PalletsController extends Controller{
         }
    }
 
-   public function retrievePallet():void{
+   public function retrievePallet():void
+   {
          $pallets = Pallet::all();   
          $title = "Estoque Virtual";
 
@@ -79,6 +93,58 @@ class PalletsController extends Controller{
 
         $pallets = [];
         $this->render('pallets/show',compact('title','pallets'));
+
+   }
+
+   public function updatePallet(Request $request):void
+   {    
+        $params = $request->getParam('pallet');
+
+        $pallet = Pallet::findBy(['id' => $params['id']]);
+
+        if($pallet){
+
+            $pallet->width = $params['width'];
+            $pallet->length = $params['length'];
+            $pallet->amount = $params['amount'];
+            $pallet->minimum_amount = $params['minimum_amount'];
+            $pallet->location = $params['location'];
+            $pallet->item = $params['item'];
+
+            $palletExist = Pallet::findBy(['length' => $pallet->length, 'width' => $pallet->width]);
+
+            if($palletExist == $pallet){
+                 FlashMessage::danger('Nenhuma alteração foi detectada');
+                 $title = "Atualizar Pallets";
+                 $this->render('pallets/update',compact('title','pallet'));
+                 return;
+            }
+
+            if($palletExist && $palletExist->id !== $pallet->id ){
+            FlashMessage::danger('Pallet já cadastrado');
+            $this->redirectTo(route('pallets.show'));
+            }
+
+            if($pallet->isValid()){
+
+                if($pallet->update(['width' => $params['width'], 'length' => $params['length'], 'amount' => $params['amount'], 'minimum_amount' => $params['minimum_amount'], 'location' => $params['location'], 'item' => $params['item'] ])){
+                    FlashMessage::success('Pallet atualizado');
+                    $this->redirectTo(route('pallets.show'));
+                }
+
+                else{ 
+                   FlashMessage::danger('Falha ao atualizar pallet');
+                   $this->redirectTo(route('pallets.show'));
+                }
+            }
+            
+            $title = "Atualizar Pallets";
+            $this->render('pallets/update',compact('title','pallet'));
+            return;
+        }
+
+        FlashMessage::danger('Pallet inexistente');
+        $this->redirectTo(route('pallets.show'));
 
    }
 

@@ -19,17 +19,22 @@
                     <?php else: ?>
                         <?php foreach ($pallets as $pallet): ?>
                             <tr>
-                                
-                                <td><?= $pallet->width ?></td>
-                                <td><?= $pallet->length ?></td>
-                                <td><?= $pallet->amount ?></td>
-                                <td><?= $pallet->minimum_amount ?></td>
-                                <td><?= $pallet->item ?></td>
-                                <td><?= $pallet->location ?></td>
+                                <td><?= htmlspecialchars($pallet->width) ?></td>
+                                <td><?= htmlspecialchars($pallet->length) ?></td>
+                                <td><?= htmlspecialchars($pallet->amount) ?></td>
+                                <td><?= htmlspecialchars($pallet->minimum_amount) ?></td>
+                                <td><?= htmlspecialchars($pallet->item) ?></td>
+                                <td><?= $pallet->location ? htmlspecialchars($pallet->location) :'' ?></td>
                                 <td>
+                                    <?php if ($this->current_user && $this->current_user->isAdmin()) : ?>
                                     <form action="/delete-pallet" method="POST">
                                         <input type="hidden" name="pallet[id]" value=<?= $pallet->id ?>>
-                                        <button type="submit">Excluir</button>
+                                        <button class="btn-exclude" type="submit">Excluir</button>
+                                    </form>
+                                    <?php endif ?>    
+                                    <form action="/update-pallet" method="GET">
+                                        <input type="hidden" name="pallet[id]" value=<?= $pallet->id ?>>
+                                        <button class="btn-update" type="submit">Editar</button>
                                     </form>    
                                 </td>
                             </tr>
@@ -54,6 +59,20 @@
 
     th {
         background-color: #eee;
+    }
+
+    button{
+        margin-left: 15px; 
+    }
+
+    .btn-exclude {
+        background-color:#DC3545 ;
+        color: white;                             
+    }
+
+    .btn-update{
+        background-color:#0D6EFD;
+        color:white;                       
     }
 </style>
 
