@@ -40,7 +40,7 @@ class PalletTest extends TestCase
     {
         $pallet = $this->buildPallet('Existing item', '80', '120');
         $pallet->save();
-        $pallet->amount = 10;
+        $pallet->amount = '10';
 
         $this->assertTrue($pallet->isValid());
     }
