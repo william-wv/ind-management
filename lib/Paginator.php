@@ -124,6 +124,7 @@ class Paginator
         $sql = <<<SQL
             SELECT id, {$attributes} FROM {$this->table}
             {$this->buildConditions()}
+            ORDER BY id ASC
             LIMIT :limit OFFSET :offset
         SQL;
 

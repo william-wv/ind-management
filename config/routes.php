@@ -21,20 +21,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');
 
-    // Pallets Stock
-      Route::get('/show-pallet', [PalletsController::class, 'show'])->name('pallets.show');
-
-    //Pallets Update 
-    Route::get('/update-pallet',[PalletsController::class, 'showUpdateForm'])->name('pallets.update.verify');
-    Route::post('/update-pallet',[PalletsController::class, 'updatePallet'])->name('pallets.update');
+    // Pallets
+    Route::get('/pallets', [PalletsController::class, 'show'])->name('pallets.index');
+    Route::get('/pallets/new', [PalletsController::class, 'new'])->name('pallets.new');
+    Route::get('/pallets/{id}/edit', [PalletsController::class, 'showUpdateForm'])->name('pallets.edit');
+    Route::put('/pallets/{id}', [PalletsController::class, 'updatePallet'])->name('pallets.update');
 
     // Admin only
     Route::middleware('admin')->group(function () {
         Route::get('/users', [UsersController::class, 'index'])->name('users.index');
-        Route::post('/create-pallet',[PalletsController::class, 'registerPallet'])->name('pallets.create');
-        Route::get('/create-pallet',[PalletsController::class,'new'])->name('pallets.form');
-        
-            //Pallets Delete 
-         Route::post('/delete-pallet',[PalletsController::class,'deletePallet'])->name('pallets.delete'); 
+        Route::post('/pallets', [PalletsController::class, 'registerPallet'])->name('pallets.create');
+        Route::delete('/pallets/{id}', [PalletsController::class, 'deletePallet'])->name('pallets.destroy');
     });
 });

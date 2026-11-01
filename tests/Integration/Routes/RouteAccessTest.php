@@ -52,22 +52,30 @@ class RouteAccessTest extends TestCase
 
     // Authenticated routes, without a session
     /**
-     * @return array<string, array{string}>
+     * @return array<string, array{string, string}>
      */
     public static function restrictedRoutes(): array
     {
         return [
-            'root' => ['/'],
-            'profile' => ['/profile'],
-            'users (admin)' => ['/users'],
-            'logout' => ['/logout'],
+            'root' => ['GET', '/'],
+            'profile' => ['GET', '/profile'],
+            'users (admin)' => ['GET', '/users'],
+            'logout' => ['GET', '/logout'],
+            'pallet list' => ['GET', '/pallets'],
+            'new pallet form' => ['GET', '/pallets/new'],
+            'pallet edit form' => ['GET', '/pallets/1/edit'],
+            'create pallet' => ['POST', '/pallets'],
+            'update pallet' => ['PUT', '/pallets/1'],
+            'delete pallet' => ['DELETE', '/pallets/1'],
         ];
     }
 
     #[DataProvider('restrictedRoutes')]
-    public function test_restricted_route_redirects_to_login_when_not_authenticated(string $path): void
-    {
-        $response = $this->client->get($path);
+    public function test_restricted_route_redirects_to_login_when_not_authenticated(
+        string $method,
+        string $path
+    ): void {
+        $response = $this->client->request($method, $path);
 
         $this->assertRedirectTo('/login', $response);
     }
@@ -99,6 +107,25 @@ class RouteAccessTest extends TestCase
         $response = $this->client->get('/users');
 
         $this->assertRedirectTo('/', $response);
+    }
+
+    public function test_basic_user_cannot_create_or_delete_pallets(): void
+    {
+        $this->login('basic@example.com');
+
+        $createResponse = $this->client->post('/pallets', [
+            'form_params' => [
+                'pallet[item]' => 'Blocked pallet',
+                'pallet[width]' => '80',
+                'pallet[length]' => '120',
+                'pallet[amount]' => '5',
+                'pallet[minimum_amount]' => '1',
+            ],
+        ]);
+        $deleteResponse = $this->client->delete('/pallets/1');
+
+        $this->assertRedirectTo('/', $createResponse);
+        $this->assertRedirectTo('/', $deleteResponse);
     }
 
     public function test_admin_user_can_access_admin_route(): void
