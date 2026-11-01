@@ -6,7 +6,6 @@ use App\Controllers\ProfileController;
 use App\Controllers\UsersController;
 use Core\Router\Route;
 
-
 // Authentication
 Route::get('/login', [AuthenticationsController::class, 'new'])->name('users.login');
 Route::post('/login', [AuthenticationsController::class, 'authenticate'])->name('users.authenticate');
