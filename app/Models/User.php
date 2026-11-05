@@ -3,43 +3,49 @@
 namespace App\Models;
 
 use App\Services\ProfileAvatar;
-use Core\Database\ActiveRecord\BelongsToMany;
-use Core\Database\ActiveRecord\HasMany;
-use Lib\Validations;
 use Core\Database\ActiveRecord\Model;
+use Lib\Validations;
 
 /**
  * @property int $id
  * @property string $name
  * @property string $email
+ * @property string $role
  * @property string $encrypted_password
  * @property string $avatar_name
- * @property Problem[] $problems
- * @property Problem[] $reinforced_problems
  */
 class User extends Model
 {
+    // TODO 1: nome da tabela e colunas graváveis
     protected static string $table = 'users';
-    protected static array $columns = ['name', 'email', 'encrypted_password', 'avatar_name'];
+    protected static array $columns = ['name', 'email', 'encrypted_password', 'role', 'avatar_name'];
 
+    // TODO 2: props virtuais (NÃO existem no banco)
     protected ?string $password = null;
     protected ?string $password_confirmation = null;
 
-    public function problems(): HasMany
+    /**
+     * Role padrão 'basic': o save() grava NULL explícito e o DEFAULT do banco
+     * só vale quando a coluna é omitida no INSERT.
+     *
+     * @param array<string, mixed> $params
+     */
+    public function __construct($params = [])
     {
-        return $this->hasMany(Problem::class, 'user_id');
+        parent::__construct(array_merge(['role' => 'basic'], $params));
     }
 
-    public function reinforcedProblems(): BelongsToMany
-    {
-        return $this->belongsToMany(Problem::class, 'problem_user_reinforce', 'user_id', 'problem_id');
-    }
-
+    // TODO 3: regras de validação (Model::isValid() chama isso antes do save)
+    // Dica: Validations::notEmpty('campo', $this);
+    //   - name, email, role -> não vazios
+    //   - email -> único (Validations::uniqueness)
+    //   - confirmação de senha -> SÓ se for registro novo ($this->newRecord())
     public function validates(): void
     {
         Validations::notEmpty('name', $this);
         Validations::notEmpty('email', $this);
-
+        Validations::notEmpty('encrypted_password', $this);
+        Validations::notEmpty('role', $this);
         Validations::uniqueness('email', $this);
 
         if ($this->newRecord()) {
@@ -47,6 +53,7 @@ class User extends Model
         }
     }
 
+    // TODO 4: conferir senha digitada contra o hash do banco
     public function authenticate(string $password): bool
     {
         if ($this->encrypted_password == null) {
@@ -56,11 +63,19 @@ class User extends Model
         return password_verify($password, $this->encrypted_password);
     }
 
-    public static function findByEmail(string $email): User | null
+    // TODO 5: buscar usuário pelo e-mail (null se não achar)
+    // Dica: Model::findBy(['coluna' => valor]) -> ?static
+    //   Dentro de método static, use `static::` ou `self::`
+    public static function findByEmail(string $email): ?static
     {
-        return User::findBy(['email' => $email]);
+        return static::findBy(['email' => $email]);
     }
 
+    // TODO 6: gerar hash quando `password` for atribuído
+    // Dica: __set roda toda vez que você faz $user->algo = valor
+    //   1. chamar parent::__set($property, $value) (senão nada é gravado)
+    //   2. se $property === 'password' E registro novo E valor não vazio
+    //      -> $this->encrypted_password = password_hash($value, PASSWORD_DEFAULT)
     public function __set(string $property, mixed $value): void
     {
         parent::__set($property, $value);
@@ -74,6 +89,13 @@ class User extends Model
         }
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    // TODO 7: avatar do usuário
+    // Dica: App\Services\ProfileAvatar recebe o próprio usuário no construtor
     public function avatar(): ProfileAvatar
     {
         return new ProfileAvatar($this);

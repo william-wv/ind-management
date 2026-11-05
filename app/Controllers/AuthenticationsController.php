@@ -26,7 +26,7 @@ class AuthenticationsController extends Controller
             Auth::login($user);
 
             FlashMessage::success('Login realizado com sucesso!');
-            $this->redirectTo(route('problems.index'));
+            $this->redirectTo(route('root'));
         } else {
             FlashMessage::danger('Email e/ou senha inválidos!');
             $this->redirectTo(route('users.login'));

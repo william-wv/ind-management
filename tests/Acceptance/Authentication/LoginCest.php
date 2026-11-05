@@ -26,7 +26,7 @@ class LoginCest extends BaseAcceptanceCest
         $page->click('Entrar');
 
         $page->see('Login realizado com sucesso!');
-        $page->seeInCurrentUrl('/problems');
+        $page->seeCurrentUrlEquals('/');
     }
 
     public function loginUnsuccessfully(AcceptanceTester $page): void
@@ -40,5 +40,35 @@ class LoginCest extends BaseAcceptanceCest
 
         $page->see('Email e/ou senha inválidos!');
         $page->seeInCurrentUrl('/login');
+    }
+
+    public function accessRestrictedAreaWithoutAuthentication(AcceptanceTester $page): void
+    {
+        $page->amOnPage('/profile');
+
+        $page->see('Você deve estar logado para acessar essa página');
+        $page->seeCurrentUrlEquals('/login');
+    }
+
+    public function logoutSuccessfully(AcceptanceTester $page): void
+    {
+        $user = new User([
+            'name' => 'User 1',
+            'email' => 'fulano@example.com',
+            'password' => '123456',
+            'password_confirmation' => '123456'
+        ]);
+        $user->save();
+
+        $page->login($user->email, '123456');
+        $page->seeCurrentUrlEquals('/');
+
+        $page->logout();
+
+        $page->see('Logout realizado com sucesso!');
+        $page->seeCurrentUrlEquals('/login');
+
+        $page->amOnPage('/profile');
+        $page->seeCurrentUrlEquals('/login');
     }
 }
