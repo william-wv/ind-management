@@ -56,14 +56,6 @@ class PalletsController extends Controller
 
         $newPallet = new Pallet($params);
 
-        if (Pallet::exists(['length' => $newPallet->length, 'width' => $newPallet->width])) {
-            FlashMessage::danger('Pallet já cadastrado');
-            $this->redirectTo(route('pallets.new'));
-        }
-
-        $newPallet->convertToInt('amount');
-        $newPallet->convertToInt('minimum_amount');
-
         if ($newPallet->save()) {
             FlashMessage::success('Pallet registrado com sucesso!');
             $this->redirectTo(route('root'));

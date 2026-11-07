@@ -77,4 +77,49 @@ class Validations
 
         return true;
     }
+
+    public static function isPositive(string $atributte, $obj)
+    {
+        if($obj->$atributte !== '' && $obj->$atributte < 0){
+            $obj->addError($atributte, 'Não é permitido valores negativos');
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function isInteger($atributte, $obj)
+    {
+        if($obj->$atributte !== '' && filter_var($obj->$atributte, FILTER_VALIDATE_INT) === false){
+
+            $obj->addError($atributte, 'Digite um número inteiro');
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function isNumber($attribute, $obj):bool
+    {
+        $value = $obj->$attribute;
+
+        if ($obj->$attribute !== '' && !is_numeric($value)) {
+            $obj->addError($attribute, 'Somente números são permitidos');
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function isMaxLarger($minAttribute,$maxAttribute, $obj){
+        $max = (int) $obj->$maxAttribute;
+
+        if($obj->$minAttribute > $max){
+            $obj->addError($maxAttribute, "O valor deve ser maior que o mínimo");
+            return false;
+        }
+
+        return true;
+    }
+
 }
