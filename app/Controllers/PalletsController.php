@@ -35,6 +35,20 @@ class PalletsController extends Controller
         $this->redirectTo(route('pallets.index'));
     }
 
+    public function showUpload(Request $request):void
+    {
+        $pallet = Pallet::findBy(['id' => $request->getParam('id')]);
+
+        if($pallet){
+            $title = "Anexar Ordem de Venda";
+            $this->render('pallets/upload', compact('title', 'pallet'));
+            return;
+        }
+
+         FlashMessage::danger('Falha ao atualizar dados do Pallet');
+         $this->redirectTo(route('pallets.index'));
+    }
+
     public function deletePallet(Request $request): void
     {
         $pallet = Pallet::findBy(['id' => $request->getParam('id')]);
@@ -136,5 +150,26 @@ class PalletsController extends Controller
 
         FlashMessage::danger('Pallet inexistente');
         $this->redirectTo(route('pallets.index'));
+    }
+
+    public function upload( Request $request):void
+    {
+          $id = $request->getParam('id');
+
+          //$images = $_FILES['images'];
+
+          $pallet = Pallet::findBy(['id' => $id]);
+
+         $photo = $pallet->photos()->new(['url' => 'screnshot/01','original_name' => 'teste', 'mime_type' =>'png', 'size_bytes' => 1234]);
+
+          var_dump($photo->save());
+
+
+          echo "ID recebido: " . $id . "<br>";
+
+            echo "<pre>";
+            //print_r($pallet->photos);
+            echo "</pre>";
+
     }
 }

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Lib\Validations;
 use Core\Database\ActiveRecord\Model;
+use Core\Database\ActiveRecord\HasMany;
+
 
 /**
  * @property int $id
@@ -60,5 +62,10 @@ class Pallet extends Model
     public function convertToInt(string $attribute): void
     {
         $this->$attribute = (int) $this->$attribute;
+    }
+
+    public function photos():HasMany
+    {
+      return  $this->hasMany(Photo::class,'pallet_id');
     }
 }

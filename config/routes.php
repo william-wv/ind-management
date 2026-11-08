@@ -25,6 +25,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/pallets/new', [PalletsController::class, 'new'])->name('pallets.new');
     Route::get('/pallets/{id}/edit', [PalletsController::class, 'showUpdateForm'])->name('pallets.edit');
     Route::put('/pallets/{id}', [PalletsController::class, 'updatePallet'])->name('pallets.update');
+    Route::get('/pallets/{id}/upload', [PalletsController::class, 'showUpload'])->name('pallets.upload.show');
+    Route::post('/pallets/upload', [PalletsController::class, 'upload'])->name('pallets.upload');
 
     // Admin only
     Route::middleware('admin')->group(function () {

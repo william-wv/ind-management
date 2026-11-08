@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS pallet_movements;
 DROP TABLE IF EXISTS movements;
 DROP TABLE IF EXISTS pallets;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS pallet_sell_orders_photos;
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -67,6 +68,7 @@ CREATE TABLE pallet_movements (
     CONSTRAINT ck_pallet_movements_after CHECK (quantity_after >= 0)
 ) ;
 
+/*
 CREATE TABLE pallet_movement_photos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     pallet_movement_id INT NOT NULL,
@@ -82,5 +84,20 @@ CREATE TABLE pallet_movement_photos (
         REFERENCES pallet_movements(id)
         ON DELETE CASCADE
 ) ;
+*/
 
+CREATE TABLE pallet_sell_orders_photos(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pallet_id INT NOT NULL,
+    url VARCHAR(255) NOT NULL,
+    original_name VARCHAR(255) NOT NULL,
+    mime_type VARCHAR(100) NOT NULL,
+    size_bytes INT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_photos_pallet_sell_orders (pallet_id),
+    CONSTRAINT fk_photos_pallet
+        FOREIGN KEY (pallet_id)
+        REFERENCES pallets(id)
+        ON DELETE CASCADE
+);
 SET foreign_key_checks = 1;

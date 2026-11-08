@@ -36,7 +36,10 @@
                                     <?php endif ?>    
                                     <form action="<?= route('pallets.edit', ['id' => $pallet->id]) ?>" method="GET">
                                         <button class="btn-update" type="submit">Editar</button>
-                                    </form>    
+                                    </form>
+                                    <form action="<?= route('pallets.upload.show', ['id' => $pallet->id]) ?>" method="GET">
+                                        <button class="btn-upload" type="submit">Anexar</button>
+                                    </form>       
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -79,6 +82,10 @@
     .btn-update{
         background-color:#0D6EFD;
         color:white;                       
+    }
+    .btn-upload{
+        background-color: #64748B;
+        color: white;
     }
 </style>
 

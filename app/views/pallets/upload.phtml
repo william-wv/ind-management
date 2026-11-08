@@ -1,0 +1,14 @@
+
+    <form action="/pallets/upload" method="POST" enctype="multipart/form-data">
+
+        <br><br>
+
+        <label>Selecione as fotos:</label>
+        <input type="file" name="images[]" accept="image/jpeg,image/png,image/webp" multiple required>
+        <input type="hidden" name="id" value="<?=  $pallet ? $pallet->id : '' ?>">
+
+        <br><br>
+
+        <button type="submit">Enviar Fotos</button>
+
+    </form>
