@@ -12,6 +12,8 @@ class UploaderPhotosPersistenceTest extends TestCase
 {
     /** @var list<string> */
     private array $filesToClean = [];
+    /** @var list<string> */
+    private array $directoriesToClean = [];
     private int $palletNumber = 0;
 
     public function tearDown(): void
@@ -19,6 +21,15 @@ class UploaderPhotosPersistenceTest extends TestCase
         foreach ($this->filesToClean as $path) {
             if (is_file($path)) {
                 unlink($path);
+            }
+        }
+
+        $directories = array_unique($this->directoriesToClean);
+        usort($directories, fn($a, $b) => strlen($b) <=> strlen($a));
+
+        foreach ($directories as $directory) {
+            if (is_dir($directory)) {
+                @rmdir($directory);
             }
         }
 
@@ -98,6 +109,9 @@ class UploaderPhotosPersistenceTest extends TestCase
         if (!is_dir($directory) && !mkdir(directory: $directory, recursive: true) && !is_dir($directory)) {
             $this->fail('Could not create the photo test directory.');
         }
+
+        $this->directoriesToClean[] = rtrim((string) $directory, '/');
+        $this->directoriesToClean[] = (string) Constants::rootPath()->join('public/assets/uploads/' . $pallet::table());
 
         $fileName = 'unit-' . bin2hex(random_bytes(8)) . '.png';
         $filePath = $directory . $fileName;
