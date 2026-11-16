@@ -6,6 +6,7 @@ use Core\Http\Controllers\Controller;
 use Core\Http\Request;
 use Lib\FlashMessage;
 use App\Models\Pallet;
+use App\Services\UploaderPhotos;
 
 class PalletsController extends Controller
 {
@@ -35,11 +36,11 @@ class PalletsController extends Controller
         $this->redirectTo(route('pallets.index'));
     }
 
-    public function showUpload(Request $request):void
+    public function showUpload(Request $request): void
     {
         $pallet = Pallet::findBy(['id' => $request->getParam('id')]);
 
-        if($pallet){
+        if ($pallet) {
             $title = "Anexar Ordem de Venda";
             $this->render('pallets/upload', compact('title', 'pallet'));
             return;
@@ -49,10 +50,31 @@ class PalletsController extends Controller
          $this->redirectTo(route('pallets.index'));
     }
 
+    public function showGallery(Request $request): void
+    {
+        $pallet = Pallet::findBy(['id' => $request->getParam('id')]);
+
+        if ($pallet) {
+            $photos = $pallet->photos()->get();
+            $title = "Galeria de Ordens de Venda";
+            $this->render('pallets/gallery', compact('title', 'pallet', 'photos'));
+            return;
+        }
+
+         FlashMessage::danger('Falha ao acessar galeria do Pallet');
+         $this->redirectTo(route('pallets.index'));
+    }
+
     public function deletePallet(Request $request): void
     {
         $pallet = Pallet::findBy(['id' => $request->getParam('id')]);
         if ($pallet) {
+            $serviceUploader = new UploaderPhotos($pallet);
+
+            if (!$serviceUploader->destroyAll()) {
+                FlashMessage::danger('não foi possivel excluir pallet, arquivos vinculados não foram excluidos');
+                $this->redirectTo(route('pallets.index'));
+            }
             if ($pallet->destroy()) {
                 FlashMessage::success('Pallet Excluido');
                 $this->redirectTo(route('pallets.index'));
@@ -152,24 +174,58 @@ class PalletsController extends Controller
         $this->redirectTo(route('pallets.index'));
     }
 
-    public function upload( Request $request):void
+    public function upload(Request $request): void
     {
-          $id = $request->getParam('id');
+         $id = $request->getParam('id');
 
-          //$images = $_FILES['images'];
+         $images = $_FILES['images'];
 
-          $pallet = Pallet::findBy(['id' => $id]);
+         $pallet = Pallet::findBy(['id' => $id]);
 
-         $photo = $pallet->photos()->new(['url' => 'screnshot/01','original_name' => 'teste', 'mime_type' =>'png', 'size_bytes' => 1234]);
+        if (!$pallet) {
+            FlashMessage::danger('Pallet inexistente');
+            $this->redirectTo(route('pallets.index'));
+        }
 
-          var_dump($photo->save());
+        $uploaderService = new UploaderPhotos($pallet);
+
+        if ($uploaderService->upload($images)) {
+             FlashMessage::success('Imagem gravada');
+             $this->redirectTo(route('pallets.index'));
+        }
+
+            $title = "Anexar Ordem de Venda";
+            $this->render('pallets/upload', compact('title', 'pallet'));
+            return;
+    }
+
+    public function removeImg(Request $request): void
+    {
+        $pallet = Pallet::findBy(['id' => $request->getParam('id')]);
+        $photoId = $request->getParam('photo_id');
+
+        if (!$pallet) {
+            FlashMessage::danger('não foi possivel excluir a foto, pallet não encontrado');
+            $this->redirectTo(route('pallets.index'));
+        }
+
+        if (!$photoId || $photoId < 0) {
+            FlashMessage::danger('não foi possivel excluir a foto, valor de referência vazio');
+            $this->redirectTo(route('pallets.gallery', ['id' => $pallet->id]));
+        }
 
 
-          echo "ID recebido: " . $id . "<br>";
+        $uploaderService = new UploaderPhotos($pallet);
+        $photoId = (int) $photoId;
 
-            echo "<pre>";
-            //print_r($pallet->photos);
-            echo "</pre>";
+        if (!$uploaderService->destroy($photoId)) {
+             $message = $pallet->errors('photo') ?? 'Não foi possível excluir a foto.';
+             FlashMessage::danger($message);
+            $this->redirectTo(route('pallets.gallery', ['id' => $pallet->id]));
+            return;
+        };
 
+        FlashMessage::success('Foto excluída.');
+        $this->redirectTo(route('pallets.gallery', ['id' => $pallet->id]));
     }
 }

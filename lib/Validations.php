@@ -28,32 +28,16 @@ class Validations
 
     public static function uniqueness($fields, $object)
     {
-        $dbFieldsValues = [];
-        $objFieldValues = [];
-
         if (!is_array($fields)) {
             $fields = [$fields];
         }
 
-        if (!$object->newRecord()) {
-            $dbObject = $object::findById($object->id);
-
-            foreach ($fields as $field) {
-                $dbFieldsValues[] = $dbObject->$field;
-                $objFieldValues[] = $object->$field;
-            }
-
-            if (
-                !empty($dbFieldsValues) &&
-                !empty($objFieldValues) &&
-                $dbFieldsValues === $objFieldValues
-            ) {
-                return true;
-            }
-        }
-
         $table = $object::table();
         $conditions = implode(' AND ', array_map(fn($field) => "{$field} = :{$field}", $fields));
+
+        if (!$object->newRecord()) {
+            $conditions .= ' AND id != :self_id';
+        }
 
         $sql = <<<SQL
             SELECT id FROM {$table} WHERE {$conditions};
@@ -64,6 +48,10 @@ class Validations
 
         foreach ($fields as $field) {
             $stmt->bindValue($field, $object->$field);
+        }
+
+        if (!$object->newRecord()) {
+            $stmt->bindValue('self_id', $object->id);
         }
 
         $stmt->execute();
@@ -80,7 +68,7 @@ class Validations
 
     public static function isPositive(string $atributte, $obj)
     {
-        if($obj->$atributte !== '' && $obj->$atributte < 0){
+        if ($obj->$atributte !== '' && $obj->$atributte < 0) {
             $obj->addError($atributte, 'Não é permitido valores negativos');
             return false;
         }
@@ -90,8 +78,7 @@ class Validations
 
     public static function isInteger($atributte, $obj)
     {
-        if($obj->$atributte !== '' && filter_var($obj->$atributte, FILTER_VALIDATE_INT) === false){
-
+        if ($obj->$atributte !== '' && filter_var($obj->$atributte, FILTER_VALIDATE_INT) === false) {
             $obj->addError($atributte, 'Digite um número inteiro');
             return false;
         }
@@ -99,7 +86,7 @@ class Validations
         return true;
     }
 
-    public static function isNumber($attribute, $obj):bool
+    public static function isNumber($attribute, $obj): bool
     {
         $value = $obj->$attribute;
 
@@ -111,15 +98,15 @@ class Validations
         return true;
     }
 
-    public static function isMaxLarger($minAttribute,$maxAttribute, $obj){
+    public static function isMaxLarger($minAttribute, $maxAttribute, $obj)
+    {
         $max = (int) $obj->$maxAttribute;
 
-        if($obj->$minAttribute > $max){
+        if ($obj->$minAttribute > $max) {
             $obj->addError($maxAttribute, "O valor deve ser maior que o mínimo");
             return false;
         }
 
         return true;
     }
-
 }

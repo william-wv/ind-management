@@ -6,7 +6,6 @@ use Lib\Validations;
 use Core\Database\ActiveRecord\Model;
 use Core\Database\ActiveRecord\HasMany;
 
-
 /**
  * @property int $id
  * @property string $item
@@ -27,27 +26,27 @@ class Pallet extends Model
     {
         $validateToConvert = [];
 
-        Validations::isPositive('width',$this);
-        Validations::isPositive('length',$this);
-        Validations::isNumber('width',$this);
-        Validations::isNumber('length',$this);
+        Validations::isPositive('width', $this);
+        Validations::isPositive('length', $this);
+        Validations::isNumber('width', $this);
+        Validations::isNumber('length', $this);
         Validations::notEmpty('width', $this);
         Validations::notEmpty('length', $this);
         Validations::notEmpty('item', $this);
         Validations::uniqueness('item', $this);
         Validations::uniqueness(['length', 'width'], $this);
-        $validateToConvert[] = Validations::isNumber('amount',$this);
+        $validateToConvert[] = Validations::isNumber('amount', $this);
         $validateToConvert[] = Validations::isNumber('minimum_amount', $this);
-        $validateToConvert[] = Validations::isPositive('amount',$this);
-        $validateToConvert[] = Validations::isPositive('minimum_amount',$this);
+        $validateToConvert[] = Validations::isPositive('amount', $this);
+        $validateToConvert[] = Validations::isPositive('minimum_amount', $this);
         $validateToConvert[] = Validations::isInteger('amount', $this);
         $validateToConvert[] = Validations::isInteger('minimum_amount', $this);
-        $validateToConvert[] = Validations::isMaxLarger('minimum_amount','amount', $this);
+        $validateToConvert[] = Validations::isMaxLarger('minimum_amount', 'amount', $this);
 
-        if(!in_array(false, $validateToConvert)) {
+        if (!in_array(false, $validateToConvert)) {
             $this->convertToInt('amount');
             $this->convertToInt('minimum_amount');
-        } 
+        }
     }
 
     public function existPallet(string $length, string $width): bool
@@ -64,8 +63,8 @@ class Pallet extends Model
         $this->$attribute = (int) $this->$attribute;
     }
 
-    public function photos():HasMany
+    public function photos(): HasMany
     {
-      return  $this->hasMany(Photo::class,'pallet_id');
+        return  $this->hasMany(Photo::class, 'pallet_id');
     }
 }
