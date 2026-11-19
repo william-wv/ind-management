@@ -5,7 +5,7 @@ namespace App\Models;
 use Lib\Validations;
 use Core\Database\ActiveRecord\Model;
 use Core\Database\ActiveRecord\HasMany;
-use Models\Movement;
+use Core\Database\ActiveRecord\BelongsToMany;
 
 /**
  * @property int $id
@@ -48,10 +48,6 @@ class Pallet extends Model
             $this->convertToInt('amount');
             $this->convertToInt('minimum_amount');
         }
-    }
-public function movement(): BelongsTo
-    {
-        return $this->belongsTo(Movement::class, 'movement_id');
     }
 
     public function existPallet(string $length, string $width): bool

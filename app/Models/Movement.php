@@ -26,4 +26,7 @@ class Movement extends Model{
         return $this->hasMany(PalletMovement::class, 'movement_id');
     }
 
+    public function user():BelongsTo{
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

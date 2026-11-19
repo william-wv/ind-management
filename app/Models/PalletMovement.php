@@ -27,7 +27,5 @@ class PalletMovement extends Model{
         return $this->belongsTo(Movement::class, 'movement_id');
     }
 
-
-
-
+    
 }
