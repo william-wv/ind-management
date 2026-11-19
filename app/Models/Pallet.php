@@ -5,6 +5,7 @@ namespace App\Models;
 use Lib\Validations;
 use Core\Database\ActiveRecord\Model;
 use Core\Database\ActiveRecord\HasMany;
+use Models\Movement;
 
 /**
  * @property int $id
@@ -48,6 +49,10 @@ class Pallet extends Model
             $this->convertToInt('minimum_amount');
         }
     }
+public function movement(): BelongsTo
+    {
+        return $this->belongsTo(Movement::class, 'movement_id');
+    }
 
     public function existPallet(string $length, string $width): bool
     {
@@ -66,5 +71,15 @@ class Pallet extends Model
     public function photos(): HasMany
     {
         return  $this->hasMany(Photo::class, 'pallet_id');
+    }
+
+    public function movements():BelongsToMany
+    {
+        return $this->BelongsToMany(Movement::class, 'pallet_movements', 'pallet_id', 'movement_id');
+    }
+
+    public function palletMovements():HasMany
+    {
+        return $this->hasMany(PalletMovement::class,'pallet_id');
     }
 }
