@@ -25,7 +25,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/pallets/new', [PalletsController::class, 'new'])->name('pallets.new');
     Route::get('/pallets/{id}/edit', [PalletsController::class, 'showUpdateForm'])->name('pallets.edit');
     Route::put('/pallets/{id}', [PalletsController::class, 'updatePallet'])->name('pallets.update');
-
+    Route::get('/pallets/{id}/upload', [PalletsController::class, 'showUpload'])->name('pallets.upload.show');
+    Route::post('/pallets/upload', [PalletsController::class, 'upload'])->name('pallets.upload');
+    Route::get('/pallets/{id}/gallery', [PalletsController::class, 'showGallery'])->name('pallets.gallery');
+    Route::delete('/pallets/{id}/photos/{photo_id}', [PalletsController::class, 'removeImg'])->name('pallets.gallery.remove');
     // Admin only
     Route::middleware('admin')->group(function () {
         Route::get('/users', [UsersController::class, 'index'])->name('users.index');
