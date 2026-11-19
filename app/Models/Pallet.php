@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Lib\Validations; 
-use Core\Database\ActiveRecord\Model; 
+use Lib\Validations;
+use Core\Database\ActiveRecord\Model;
 use Core\Database\ActiveRecord\HasMany;
 use Core\Database\ActiveRecord\BelongsToMany;
 
@@ -67,5 +67,15 @@ class Pallet extends Model
     public function photos(): HasMany
     {
         return  $this->hasMany(Photo::class, 'pallet_id');
+    }
+
+    public function movements():BelongsToMany
+    {
+        return $this->BelongsToMany(Movement::class, 'pallet_movements', 'pallet_id', 'movement_id');
+    }
+
+    public function palletMovements():HasMany
+    {
+        return $this->hasMany(PalletMovement::class,'pallet_id');
     }
 }
