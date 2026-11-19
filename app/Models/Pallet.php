@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Lib\Validations;
-use Core\Database\ActiveRecord\Model;
+use Lib\Validations; 
+use Core\Database\ActiveRecord\Model; 
 use Core\Database\ActiveRecord\HasMany;
+use Core\Database\ActiveRecord\BelongsToMany;
 
 /**
  * @property int $id
