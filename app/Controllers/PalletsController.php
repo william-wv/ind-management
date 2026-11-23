@@ -71,6 +71,11 @@ class PalletsController extends Controller
         if ($pallet) {
             $serviceUploader = new UploaderPhotos($pallet);
 
+            if($pallet->hasMovements()){
+                FlashMessage::danger('Não foi possivel excluir pallet, pois existe movimentações no histórico do mesmo');
+                $this->redirectTo(route('pallets.index'));
+            }
+
             if (!$serviceUploader->destroyAll()) {
                 FlashMessage::danger('não foi possivel excluir pallet, arquivos vinculados não foram excluidos');
                 $this->redirectTo(route('pallets.index'));

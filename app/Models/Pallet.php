@@ -78,4 +78,12 @@ class Pallet extends Model
     {
         return $this->hasMany(PalletMovement::class,'pallet_id');
     }
+
+    public function hasMovements():bool{
+        if($this->palletMovements()->get()){
+           return true;
+        }
+
+        return false;
+    }
 }

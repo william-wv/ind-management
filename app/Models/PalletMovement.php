@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use Models\Movement;
 use Core\Database\ActiveRecord\BelongsTo;
 use Core\Database\ActiveRecord\Model;
-use Models\Pallet;
 
 class PalletMovement extends Model{
 
@@ -27,5 +25,5 @@ class PalletMovement extends Model{
         return $this->belongsTo(Movement::class, 'movement_id');
     }
 
-    
+
 }

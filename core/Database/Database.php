@@ -7,18 +7,41 @@ use PDO;
 
 class Database
 {
+    private static ?PDO $connection = null;
+
     public static function getDatabaseConn(): PDO
     {
-        $user = $_ENV['DB_USERNAME'];
-        $pwd  = $_ENV['DB_PASSWORD'];
-        $host = $_ENV['DB_HOST'];
-        $port = $_ENV['DB_PORT'];
-        $db   = $_ENV['DB_DATABASE'];
+        if (self::$connection === null) {
+            $user = $_ENV['DB_USERNAME'];
+            $pwd  = $_ENV['DB_PASSWORD'];
+            $host = $_ENV['DB_HOST'];
+            $port = $_ENV['DB_PORT'];
+            $db   = $_ENV['DB_DATABASE'];
 
-        $pdo = new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $db, $user, $pwd);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            self::$connection = new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $db, $user, $pwd);
+            self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        }
 
-        return $pdo;
+        return self::$connection;
+    }
+
+    /**
+     * Runs $fn inside a single DB transaction, committing on success
+     * and rolling back if it throws.
+     */
+    public static function transaction(callable $fn): mixed
+    {
+        $pdo = self::getDatabaseConn();
+        $pdo->beginTransaction();
+
+        try {
+            $result = $fn();
+            $pdo->commit();
+            return $result;
+        } catch (\Throwable $e) {
+            $pdo->rollback();
+            throw $e;
+        }
     }
 
     public static function getConn(): PDO
@@ -44,6 +67,10 @@ class Database
     {
         $sql = 'DROP DATABASE IF EXISTS ' . $_ENV['DB_DATABASE'] . ';';
         self::getConn()->exec($sql);
+
+        // The cached connection (if any) was pointing at the database we
+        // just dropped; force the next getDatabaseConn() call to reconnect.
+        self::$connection = null;
     }
 
     public static function migrate(): void
