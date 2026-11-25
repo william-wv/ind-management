@@ -102,7 +102,8 @@ class User extends Model
         return new ProfileAvatar($this);
     }
 
-    public function movements():HasMany{
-       return $this->hasMany(Movement::class, 'user_id');
+    public function movements(): HasMany
+    {
+        return $this->hasMany(Movement::class, 'user_id');
     }
 }

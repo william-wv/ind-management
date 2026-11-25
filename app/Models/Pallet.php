@@ -69,19 +69,20 @@ class Pallet extends Model
         return  $this->hasMany(Photo::class, 'pallet_id');
     }
 
-    public function movements():BelongsToMany
+    public function movements(): BelongsToMany
     {
         return $this->BelongsToMany(Movement::class, 'pallet_movements', 'pallet_id', 'movement_id');
     }
 
-    public function palletMovements():HasMany
+    public function palletMovements(): HasMany
     {
-        return $this->hasMany(PalletMovement::class,'pallet_id');
+        return $this->hasMany(PalletMovement::class, 'pallet_id');
     }
 
-    public function hasMovements():bool{
-        if($this->palletMovements()->get()){
-           return true;
+    public function hasMovements(): bool
+    {
+        if ($this->palletMovements()->get()) {
+            return true;
         }
 
         return false;

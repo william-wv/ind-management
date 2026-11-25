@@ -58,13 +58,13 @@ class MovementsController extends Controller
         $this->render('movements/new', compact('title', 'pallets', 'movementType'));
     }
 
-    public function delete(Request $request):void
+    public function delete(Request $request): void
     {
         $params = $request->getParam('id');
 
         $palletMovement = PalletMovement::findById($params);
 
-        if(!$palletMovement){
+        if (!$palletMovement) {
             FlashMessage::danger('Movimentação inexistente');
             $this->redirectTo(route('movements.history'));
             return;
@@ -72,7 +72,7 @@ class MovementsController extends Controller
 
         $excludedMovement = (new MovePallet())->destroy($palletMovement);
 
-        if(!$excludedMovement->hasErrors()){
+        if (!$excludedMovement->hasErrors()) {
             FlashMessage::success('Movimentação excluida com sucesso.');
             $this->redirectTo(route('movements.history'));
             return;

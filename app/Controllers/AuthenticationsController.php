@@ -24,10 +24,26 @@ class AuthenticationsController extends Controller
 
         if ($user && $user->authenticate($params['password'])) {
             Auth::login($user);
-
             FlashMessage::success('Login realizado com sucesso!');
+
+            if ($request->acceptJson()) {
+                $this->renderJson('authentications/login_result', [
+                    'success' => true,
+                    'redirect' => route('root'),
+                ]);
+                return;
+            }
+
             $this->redirectTo(route('root'));
         } else {
+            if ($request->acceptJson()) {
+                $this->renderJson('authentications/login_result', [
+                    'success' => false,
+                    'message' => 'Email e/ou senha inválidos!',
+                ]);
+                return;
+            }
+
             FlashMessage::danger('Email e/ou senha inválidos!');
             $this->redirectTo(route('users.login'));
         }

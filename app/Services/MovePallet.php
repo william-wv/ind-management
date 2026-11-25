@@ -17,7 +17,7 @@ class MovePallet
      *     type: ?string,
      *     observation: ?string,
      *     user_id: ?int,
-     *     pallets: array<int, array{pallet_id: mixed, quantity: mixed}>
+     *     pallets?: array<int, array{pallet_id: mixed, quantity: mixed}>
      * } $data
      */
     public function create(array $data): Movement
@@ -77,6 +77,7 @@ class MovePallet
             'inbound' => $quantityBefore + $quantity,
             'outbound' => $quantityBefore - $quantity,
             'inventory' => $quantity,
+            default => throw new RuntimeException('Tipo de movimentação inválido.'),
         };
 
         if ($quantityAfter < 0) {
@@ -100,7 +101,9 @@ class MovePallet
         }
     }
 
-    public function destroy(PalletMovement $palletMovement):PalletMovement{
+    public function destroy(PalletMovement $palletMovement): PalletMovement
+    {
+        /** @var Pallet $pallet */
         $pallet = $palletMovement->pallet()->get();
 
         try {
@@ -113,8 +116,6 @@ class MovePallet
                 }
 
                 $this->restoreQuantityPallet($pallet, $quantityBefore);
-
-            
             });
         } catch (RuntimeException $e) {
             $palletMovement->addError('pallet_movements', $e->getMessage());
@@ -123,9 +124,10 @@ class MovePallet
         return $palletMovement;
     }
 
-    private function restoreQuantityPallet(Pallet $pallet, int $previous):void{
+    private function restoreQuantityPallet(Pallet $pallet, int $previous): void
+    {
 
-        if(!$pallet->update(['amount' => $previous])){
+        if (!$pallet->update(['amount' => $previous])) {
             throw new RuntimeException('Não foi possível atualizar a quantidade do pallet durante a exclusão');
         }
     }

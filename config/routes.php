@@ -30,8 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/pallets/upload', [PalletsController::class, 'upload'])->name('pallets.upload');
     Route::get('/pallets/{id}/gallery', [PalletsController::class, 'showGallery'])->name('pallets.gallery');
     Route::delete('/pallets/{id}/photos/{photo_id}', [PalletsController::class, 'removeImg'])->name('pallets.gallery.remove');
-    
-    // Movements 
+
+    // Movements
     Route::get('/movements', [MovementsController::class, 'new'])->name('movements.index');
     Route::post('/movements', [MovementsController::class, 'create'])->name('movements.create');
     Route::get('/movements/history', [MovementsController::class, 'index'])->name('movements.history');
