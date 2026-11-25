@@ -5,6 +5,7 @@ use App\Controllers\AuthenticationsController;
 use App\Controllers\ProfileController;
 use App\Controllers\UsersController;
 use Core\Router\Route;
+use App\Controllers\MovementsController;
 
 // Authentication
 Route::get('/login', [AuthenticationsController::class, 'new'])->name('users.login');
@@ -25,6 +26,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/pallets/new', [PalletsController::class, 'new'])->name('pallets.new');
     Route::get('/pallets/{id}/edit', [PalletsController::class, 'showUpdateForm'])->name('pallets.edit');
     Route::put('/pallets/{id}', [PalletsController::class, 'updatePallet'])->name('pallets.update');
+    Route::get('/pallets/{id}/upload', [PalletsController::class, 'showUpload'])->name('pallets.upload.show');
+    Route::post('/pallets/upload', [PalletsController::class, 'upload'])->name('pallets.upload');
+    Route::get('/pallets/{id}/gallery', [PalletsController::class, 'showGallery'])->name('pallets.gallery');
+    Route::delete('/pallets/{id}/photos/{photo_id}', [PalletsController::class, 'removeImg'])->name('pallets.gallery.remove');
+
+    // Movements
+    Route::get('/movements', [MovementsController::class, 'new'])->name('movements.index');
+    Route::post('/movements', [MovementsController::class, 'create'])->name('movements.create');
+    Route::get('/movements/history', [MovementsController::class, 'index'])->name('movements.history');
+    Route::delete('/movements/pallet-movements/{id}', [MovementsController::class, 'delete'])->name('movements.remove');
 
     // Admin only
     Route::middleware('admin')->group(function () {

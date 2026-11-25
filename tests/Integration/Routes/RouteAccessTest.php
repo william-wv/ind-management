@@ -64,9 +64,16 @@ class RouteAccessTest extends TestCase
             'pallet list' => ['GET', '/pallets'],
             'new pallet form' => ['GET', '/pallets/new'],
             'pallet edit form' => ['GET', '/pallets/1/edit'],
+            'pallet gallery' => ['GET', '/pallets/1/gallery'],
+            'pallet upload' => ['POST', '/pallets/upload'],
+            'delete pallet photo' => ['DELETE', '/pallets/1/photos/1'],
             'create pallet' => ['POST', '/pallets'],
             'update pallet' => ['PUT', '/pallets/1'],
             'delete pallet' => ['DELETE', '/pallets/1'],
+            'new movement form' => ['GET', '/movements'],
+            'create movement ' => ['POST', '/movements'],
+            'history'  =>  ['GET', '/movements/history'],
+            'delete movement' => ['DELETE', '/movements/pallet-movements/1']
         ];
     }
 

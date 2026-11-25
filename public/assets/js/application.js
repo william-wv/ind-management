@@ -24,3 +24,44 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const loginForm = document.getElementById("login-form");
+
+  if (!loginForm) return;
+
+  const loginError = document.getElementById("login-error");
+
+  loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch(loginForm.action, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body: new URLSearchParams(new FormData(loginForm)),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        window.location.href = data.redirect;
+        return;
+      }
+
+      if (loginError) {
+        loginError.textContent = data.message;
+        loginError.hidden = false;
+      }
+    } catch (error) {
+      if (loginError) {
+        loginError.textContent = "Não foi possível conectar ao servidor.";
+        loginError.hidden = false;
+      }
+    }
+  });
+});

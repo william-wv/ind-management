@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Services\ProfileAvatar;
 use Core\Database\ActiveRecord\Model;
 use Lib\Validations;
+use Core\Database\ActiveRecord\HasMany;
 
 /**
  * @property int $id
@@ -99,5 +100,10 @@ class User extends Model
     public function avatar(): ProfileAvatar
     {
         return new ProfileAvatar($this);
+    }
+
+    public function movements(): HasMany
+    {
+        return $this->hasMany(Movement::class, 'user_id');
     }
 }

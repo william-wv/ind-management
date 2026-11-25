@@ -33,10 +33,19 @@
                                         <input type="hidden" name="_method" value="DELETE">
                                         <button class="btn-exclude" type="submit">Excluir</button>
                                     </form>
+                    
                                     <?php endif ?>    
                                     <form action="<?= route('pallets.edit', ['id' => $pallet->id]) ?>" method="GET">
                                         <button class="btn-update" type="submit">Editar</button>
-                                    </form>    
+                                    </form>
+
+                                    <form action="<?= route('pallets.upload.show', ['id' => $pallet->id]) ?>" method="GET">
+                                        <button class="btn-upload" type="submit">Anexar</button>
+                                    </form> 
+                                
+                                    <form action="<?= route('pallets.gallery', ['id' => $pallet->id]) ?>" method="GET">
+                                        <button class="btn-gallery" type="submit">Ver Anexos</button>
+                                    </form>  
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -79,6 +88,14 @@
     .btn-update{
         background-color:#0D6EFD;
         color:white;                       
+    }
+    .btn-upload{
+        background-color: #64748B;
+        color: white;
+    }
+    .btn-gallery{
+        background-color: #7C3AED;
+        color:white;
     }
 </style>
 
